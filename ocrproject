@@ -1,0 +1,32 @@
+import cv2
+import pytesseract
+from PIL import Image
+
+# Configure path to Tesseract executable
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+# Load the image
+image_path = "sample_image.jpg"
+image = cv2.imread(image_path)
+
+# Preprocess the image (convert to grayscale, apply thresholding)
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+
+# Optionally save the preprocessed image
+cv2.imwrite("processed_image.jpg", thresh)
+
+# Perform OCR
+text = pytesseract.image_to_string(thresh)
+
+# Print and save the extracted text
+print("Extracted Text:")
+print(text)
+with open("output_text.txt", "w", encoding="utf-8") as f:
+    f.write(text)
+
+# Display the original and processed images
+cv2.imshow("Original Image", image)
+cv2.imshow("Processed Image", thresh)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
